@@ -1,7 +1,16 @@
 name: CI and Build
+run-name: CI and Build
 
 on:
+  pull_request:
+    branches:
+      - develop
+      - main
+
   push:
+    branches:
+      - develop
+      - main
 
 jobs:
   build:
@@ -20,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
+      - name: Lint (Check Code Quality)
         run: npm run lint
 
       - name: Build
