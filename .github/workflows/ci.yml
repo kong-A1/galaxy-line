@@ -1,5 +1,4 @@
-name: CI and Build
-run-name: CI and Build
+name: Frontend CI
 
 on:
   pull_request:
@@ -14,23 +13,24 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: "npm"
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint (Check Code Quality)
+      - name: Run ESLint
         run: npm run lint
 
-      - name: Build
+      - name: Build project
         run: npm run build
