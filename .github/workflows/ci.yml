@@ -33,10 +33,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint
+      - name: ESLint
         run: npm run lint
 
-      - name: Run Test
+      - name: Type Check
+        run: npm run type-check
+
+      - name: Test
         run: npm run test
 
       - name: Build project
