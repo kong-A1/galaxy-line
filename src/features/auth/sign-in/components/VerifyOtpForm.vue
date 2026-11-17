@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { nextTick, onMounted, useId, useTemplateRef } from 'vue'
+import { computed, nextTick, onMounted, useId, useTemplateRef } from 'vue'
 
+import { useMemberLogin, type MemberLoginOutcome } from '@/composables/auth/logic/useMemberLogin'
 import { useOtpVerification } from '@/composables/auth/logic/useOtpVerification'
 
 import BaseButton from '@/components/common/BaseButton.vue'
@@ -8,23 +9,28 @@ import OtpInput from './OtpInput.vue'
 import OtpLockedDialog from './OtpLockedDialog.vue'
 
 const emit = defineEmits<{
-  /** The code was accepted */
-  verified: []
+  /** The code was accepted and traded for a member (or for nothing: `outcome` says which) */
+  verified: [outcome: MemberLoginOutcome]
 }>()
 
 const verification = useOtpVerification()
+const memberLogin = useMemberLogin()
 const {
   code,
   error,
   notice,
-  isVerifying,
-  isBusy,
+  isVerifying: isChecking,
+  isBusy: isVerificationBusy,
   isLocked,
   shownDestination,
   refCode,
   secondsLeft,
   isWaiting,
 } = verification
+
+// The code is checked first, then traded for a member; the button stays busy for both
+const isVerifying = computed(() => isChecking.value || memberLogin.isPending.value)
+const isBusy = computed(() => isVerificationBusy.value || memberLogin.isPending.value)
 
 const errorId = `${useId()}-error`
 const otp = useTemplateRef<InstanceType<typeof OtpInput>>('otp')
@@ -38,7 +44,7 @@ async function refocus() {
 
 async function submit() {
   if (await verification.verify()) {
-    emit('verified')
+    emit('verified', await memberLogin.complete(code.value))
     return
   }
 

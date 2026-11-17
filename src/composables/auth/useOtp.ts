@@ -4,8 +4,15 @@ import { memberKeys } from '@/composables/member/useMember'
 import { apiErrorResponse } from '@/services/api/api-error'
 import { OtpError, otpService } from '@/services/modules/auth/otp.service'
 
-import type { ApiError } from '@/types/api/api.type'
-import type { OtpRequestPayload, RefCode, OtpVerifyPayload } from '@/types/auth/auth.type'
+import type { ApiError, ApiMessageResponse } from '@/types/api/api.type'
+import type {
+  LinkMemberPayload,
+  LoginOtpPayload,
+  LoginOtpResponse,
+  OtpRequestPayload,
+  OtpVerifyPayload,
+  RefCode,
+} from '@/types/auth/auth.type'
 
 import { OTP_MAX_ATTEMPTS } from '@/utils/otp'
 
@@ -47,6 +54,35 @@ export function useVerifyOtp() {
       } catch (error: unknown) {
         const failure = toOtpFailure(error)
         throw attemptsOf(failure) >= OTP_MAX_ATTEMPTS ? new OtpError('locked') : failure
+      }
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: memberKeys.all }),
+  })
+}
+
+/** Signs a verified code in as an existing member. A failure means this contact is not a member yet. */
+export function useLoginOtp() {
+  return useMutation<LoginOtpResponse, ApiError, LoginOtpPayload>({
+    mutationFn: async (payload) => {
+      try {
+        return await otpService.loginOtp(payload)
+      } catch (error: unknown) {
+        throw apiErrorResponse(error)
+      }
+    },
+  })
+}
+
+/** Links the LINE account to the member found by `useLoginOtp`, so whatever was cached about "the member" is stale. */
+export function useLinkMember() {
+  const queryClient = useQueryClient()
+
+  return useMutation<ApiMessageResponse, ApiError, LinkMemberPayload>({
+    mutationFn: async (payload) => {
+      try {
+        return await otpService.linkMember(payload)
+      } catch (error: unknown) {
+        throw apiErrorResponse(error)
       }
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: memberKeys.all }),

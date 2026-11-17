@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
+import type { MemberLoginOutcome } from '@/composables/auth/logic/useMemberLogin'
 import { useSignInStep } from '@/composables/auth/logic/useSignInStep'
 import { usePdpaStore } from '@/stores/pdpa.store'
 import { useSignInStore } from '@/stores/sign-in.store'
@@ -12,6 +13,7 @@ import BaseLogo from '@/components/common/BaseLogo.vue'
 import BrandWordmark from '@/components/ui/BrandWordmark.vue'
 import NeonPage from '@/components/ui/NeonPage.vue'
 import AuthSteps from '@/features/auth/components/AuthSteps.vue'
+import NotMemberDialog from './components/NotMemberDialog.vue'
 import RegisterForm from './components/RegisterForm.vue'
 import RequestOtpForm from './components/RequestOtpForm.vue'
 import VerifyOtpForm from './components/VerifyOtpForm.vue'
@@ -41,11 +43,28 @@ async function leave() {
   signInStore.clear()
 }
 
-// Someone who pressed register fills in their details next; everyone else is done
-function onVerified() {
+// A code that did not lead to a member is sent on by what was pressed on the welcome page: register carries on
+// to the register step, sign-in is told they are not a member yet
+const isNotMemberOpen = ref(false)
+
+function onVerified(outcome: MemberLoginOutcome) {
   signInStore.markVerified()
-  if (signInStore.action === 'register') goToRegister()
-  else void leave()
+  if (outcome === 'member') void leave()
+  else if (outcome === 'register') goToRegister()
+  else isNotMemberOpen.value = true
+}
+
+// Registering from the popup: the page now behaves as if register was pressed on welcome
+function onRegisterInstead() {
+  isNotMemberOpen.value = false
+  signInStore.setAction('register')
+  goToRegister()
+}
+
+async function onBackToWelcome() {
+  isNotMemberOpen.value = false
+  await router.replace('/auth/welcome')
+  signInStore.clear()
 }
 
 const steps = {
@@ -88,6 +107,8 @@ const stepActive = computed(() => steps[step.value])
         <RegisterForm v-else key="register" @registered="leave" />
       </Transition>
     </main>
+
+    <NotMemberDialog v-if="isNotMemberOpen" @register="onRegisterInstead" @back="onBackToWelcome" />
 
     <PdpaDialog
       v-if="pdpa.needsConsent"

@@ -120,6 +120,10 @@ export default {
       resend: 'Resend code',
       resent: 'A new code has been sent',
     },
+    notMember: {
+      title: 'Member not found',
+      body: 'The phone number {phone} is not a member yet. Tap Sign Up to continue.',
+    },
     register: {
       title: 'Personal information',
       subtitle: 'Fill in your details to get started and enjoy member benefits',
