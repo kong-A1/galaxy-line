@@ -70,7 +70,7 @@ function decline() {
     >
       <div class="text-center">
         <span
-          class="neon-tone-pink mx-auto flex size-12 items-center justify-center rounded-2xl text-white short:hidden"
+          class="neon-tone-blue mx-auto flex size-12 items-center justify-center rounded-2xl text-white short:hidden"
         >
           <IconShieldCheck :size="24" :stroke-width="2.4" aria-hidden="true" />
         </span>

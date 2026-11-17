@@ -53,6 +53,7 @@ export default {
     search: 'ค้นหา',
     clear: 'ล้างที่เลือก',
     remove: 'เอา {name} ออก',
+    understand: 'เข้าใจแล้ว',
     datePicker: { day: 'วัน', month: 'เดือน', year: 'ปี' },
   },
   message: {
@@ -113,7 +114,8 @@ export default {
       checking: 'กำลังตรวจสอบ',
       incomplete: 'กรุณากรอกรหัส OTP ให้ครบ 6 หลัก',
       invalid: 'รหัส OTP ไม่ถูกต้อง กรุณาลองใหม่',
-      locked: 'กรุณากด ขอรหัสใหม่ เพื่อดำเนินการต่อ เนื่องจากรหัสเดิมไม่สามารถใช้งานได้แล้ว',
+      lockedTitle: 'รหัสนี้ใช้ไม่ได้แล้ว',
+      locked: 'เนื่องจากใส่รหัสผิดหลายครั้ง กรุณากดปุ่ม {action} \nเพื่อรับรหัสใหม่',
       resendIn: 'ขอใหม่อีก {seconds} s',
       resend: 'ขอรหัสใหม่',
       resent: 'ส่งรหัสใหม่แล้ว',

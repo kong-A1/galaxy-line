@@ -39,7 +39,7 @@ async function onKeydown(event: KeyboardEvent) {
 <template>
   <div
     role="tablist"
-    class="relative grid gap-1 rounded-full border border-neon-glass-border bg-neon-ghost-bg p-[5px]"
+    class="relative grid gap-1 rounded-full border border-neon-glass-border bg-neon-ghost-bg p-1"
     :style="{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }"
     @keydown="onKeydown"
   >

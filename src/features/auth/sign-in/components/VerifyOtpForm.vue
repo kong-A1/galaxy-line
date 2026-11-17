@@ -5,6 +5,7 @@ import { useOtpVerification } from '@/composables/auth/logic/useOtpVerification'
 
 import BaseButton from '@/components/common/BaseButton.vue'
 import OtpInput from './OtpInput.vue'
+import OtpLockedDialog from './OtpLockedDialog.vue'
 
 const emit = defineEmits<{
   /** The code was accepted */
@@ -128,5 +129,7 @@ onMounted(() => {
     </div>
 
     <p role="status" class="sr-only">{{ notice }}</p>
+
+    <OtpLockedDialog v-if="isLocked" />
   </form>
 </template>

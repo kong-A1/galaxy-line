@@ -53,6 +53,7 @@ export default {
     search: 'Search',
     clear: 'Clear selection',
     remove: 'Remove {name}',
+    understand: 'Understand',
     datePicker: { day: 'Day', month: 'Month', year: 'Year' },
   },
   message: {
@@ -113,7 +114,8 @@ export default {
       checking: 'Checking',
       incomplete: 'Please enter all 6 digits',
       invalid: 'That code is not correct. Please try again.',
-      locked: 'Please request a new OTP to continue, as the previous one is no longer valid.',
+      lockedTitle: 'This code is no longer valid',
+      locked: 'Too many incorrect attempts. Please tap {action} to get a new code.',
       resendIn: 'Resend in {seconds}s',
       resend: 'Resend code',
       resent: 'A new code has been sent',

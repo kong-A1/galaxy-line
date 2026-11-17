@@ -67,7 +67,7 @@ export function useOtpVerification() {
         failedAttempts.value >= OTP_MAX_ATTEMPTS
       ) {
         isLocked.value = true
-        error.value = t('auth.verify.locked')
+        error.value = t('auth.verify.locked', { action: `"${t('auth.verify.resend')}"` })
       } else {
         error.value = t('auth.verify.invalid')
       }
