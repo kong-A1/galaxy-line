@@ -1,0 +1,43 @@
+.loader {
+  --color-1: var(--neon-violet);
+  --color-2: color-mix(in oklab, var(--neon-cyan) 20%, transparent);
+
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(0deg, var(--color-1) 15%, var(--color-2) 100%);
+  animation: rotation 1s linear infinite;
+  will-change: transform;
+}
+
+.loader::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--neon);
+}
+
+@keyframes rotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    animation-duration: 4s;
+  }
+}
+
+/* Browser autofill paints its own light background and forces black text (`color: fieldtext !important`, so `currentColor` is black too).
+   Delay the background change so it never shows, and set the text colour from the theme instead. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--foreground);
+  caret-color: var(--foreground);
+  transition: background-color 600000s 0s;
+}

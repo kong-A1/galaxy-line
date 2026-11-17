@@ -1,0 +1,48 @@
+import type { Member } from '@/types/member/member.type'
+
+/** Stand-in for GET /member while the API is not ready (enabled by VITE_USE_MOCK) */
+export const memberMock: Member = {
+  member_profile: {
+    member_code: 'M2609-xxxxx8',
+    first_name: 'Siraphop',
+    last_name: 'A.',
+    phone_no: '0812345678',
+    email: 'siraphop@example.com',
+    gender: 'male',
+    date_of_birth: '1995-04-12',
+    point_balance: 12450,
+    earliest_point_expired: { expiration_date: '2026-12-31', point: 12450 },
+    register_date: '2026-01-15',
+    member_date: '2026-01-15',
+    language: 'en',
+    ref_member_code: null,
+    line_uid: 'U0000000000000000000000000000000',
+    line_image_url: '',
+    line_display_name: 'Siraphop',
+    total_lucky_draws: 0,
+  },
+  member_line: {
+    line_uid: 'U0000000000000000000000000000000',
+    line_image_url: '',
+    line_display_name: 'Siraphop',
+    app_domain: 'labx',
+  },
+  member_card: { card_code: 'M2609-xxxxx8', card_expire_date: '2027-12-31' },
+  member_tier: {
+    tier_code: 'Platinum',
+    tier_type: 'spending',
+    tier_start_date: '2026-01-15',
+    tier_end_date: '2027-01-14',
+    total_spending: 12450,
+    maintain_spending: 0,
+    limit_tier: 20000,
+    tier_image_url: null,
+    next_tier_name: 'Diamond',
+  },
+  member_service_tier: null,
+  member_position: null,
+  member_subscription: null,
+  subscription_expire_date: null,
+  is_subscription: false,
+  notification: null,
+}

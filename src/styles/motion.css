@@ -1,0 +1,275 @@
+/* Decorative motion for the 404 and maintenance screens. Only transform, opacity and stroke-dashoffset
+   are animated, so nothing reflows. SVG pieces keep their position on an outer <g>; the animation sits on an inner one. */
+
+@keyframes tw {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: -144;
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+@keyframes moon {
+  to {
+    offset-distance: 100%;
+  }
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+@keyframes wrench {
+  0%,
+  55%,
+  100% {
+    transform: rotate(0);
+  }
+  15% {
+    transform: rotate(-16deg);
+  }
+  30% {
+    transform: rotate(14deg);
+  }
+  42% {
+    transform: rotate(-6deg);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scene colours are derived from the theme tokens so they follow light/dark */
+.status-scene {
+  --scene-line: color-mix(in oklab, var(--galaxy-light) 55%, white);
+  --scene-soft: color-mix(in oklab, var(--galaxy-light) 25%, white);
+  --scene-deep: var(--galaxy);
+  --scene-ink: var(--hero-via);
+}
+
+.anim-rise {
+  animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.anim-fade {
+  animation: fade 0.3s both;
+}
+
+/* PDPA popup */
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+dialog.anim-pop[open] {
+  animation: pop 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+dialog.anim-pop[open]::backdrop {
+  animation: backdrop 0.25s ease-out both;
+}
+/* Closing plays the same movement backwards (useDialogMotion adds data-closing, then closes the dialog when it ends) */
+@keyframes pop-out {
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+@keyframes backdrop-out {
+  to {
+    opacity: 0;
+  }
+}
+dialog.anim-pop[open][data-closing] {
+  animation: pop-out 0.2s cubic-bezier(0.4, 0, 1, 1) both;
+}
+dialog.anim-pop[open][data-closing]::backdrop {
+  animation: backdrop-out 0.2s ease-in both;
+}
+
+.anim-tw {
+  animation: tw 3s infinite;
+}
+.anim-dash {
+  animation: dash 14s linear infinite;
+}
+.anim-float {
+  animation: float 5s ease-in-out infinite;
+}
+.anim-wobble {
+  animation: wobble 7s ease-in-out infinite;
+}
+
+/* 404: the moon follows the tilted ellipse behind the numbers. Hidden where offset-path is unsupported. */
+.anim-moon {
+  display: none;
+  offset-rotate: 0deg;
+  animation: moon 16s linear infinite;
+}
+@supports (offset-path: path('M 0 0')) {
+  .anim-moon {
+    display: inline;
+    offset-path: path('M -50.1 355.3 A 255 92 -16 0 1 440.1 214.7 A 255 92 -16 0 1 -50.1 355.3');
+  }
+}
+
+/* Maintenance: everything pivots around the planet at (195, 262) */
+.anim-orbit-cw {
+  transform-origin: 195px 262px;
+  animation: spin 20s linear infinite;
+}
+.anim-orbit-ccw {
+  transform-origin: 195px 262px;
+  animation: spin 11s linear infinite reverse;
+}
+.anim-pulse {
+  transform-origin: 195px 262px;
+  animation: pulse 3s ease-out infinite;
+}
+/* Pivots in the icon's own 24x24 space */
+.anim-wrench {
+  transform-origin: 12px 12px;
+  animation: wrench 2.8s ease-in-out infinite;
+}
+.anim-minute {
+  transform-origin: 12px 12px;
+  animation: spin 6s linear infinite;
+}
+
+/* Sign-in steps: the old section leaves the way the new one arrives from */
+.step-forward-enter-active,
+.step-forward-leave-active,
+.step-back-enter-active,
+.step-back-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+.step-forward-enter-from,
+.step-back-leave-to {
+  opacity: 0;
+  transform: translateX(24px);
+}
+.step-forward-leave-to,
+.step-back-enter-from {
+  opacity: 0;
+  transform: translateX(-24px);
+}
+
+/* Sign-in tabs: the field's content slides a short way, the way the tab pill moves */
+.tab-forward-enter-active,
+.tab-forward-leave-active,
+.tab-back-enter-active,
+.tab-back-leave-active {
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+.tab-forward-enter-from,
+.tab-back-leave-to {
+  opacity: 0;
+  transform: translateX(16px);
+}
+.tab-forward-leave-to,
+.tab-back-enter-from {
+  opacity: 0;
+  transform: translateX(-16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-forward-enter-active,
+  .tab-forward-leave-active,
+  .tab-back-enter-active,
+  .tab-back-leave-active,
+  .step-forward-enter-active,
+  .step-forward-leave-active,
+  .step-back-enter-active,
+  .step-back-leave-active {
+    transition: none;
+  }
+
+  .anim-rise,
+  .anim-fade,
+  dialog.anim-pop[open],
+  dialog.anim-pop[open]::backdrop,
+  dialog.anim-pop[open][data-closing],
+  dialog.anim-pop[open][data-closing]::backdrop,
+  .anim-tw,
+  .anim-dash,
+  .anim-float,
+  .anim-wobble,
+  .anim-orbit-cw,
+  .anim-orbit-ccw,
+  .anim-wrench,
+  .anim-minute {
+    animation: none;
+  }
+
+  /* The moon and the waves only exist as motion, so they go away entirely */
+  .anim-moon,
+  .anim-pulse {
+    display: none;
+  }
+}
