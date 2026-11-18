@@ -118,7 +118,7 @@ const floated = computed(() => props.filled || focused.value)
       v-if="error"
       :id="errorId"
       role="alert"
-      class="anim-fade mt-0.5 text-sm leading-5 text-neon-error tablet:text-base"
+      class="anim-fade ms-4 mt-0.5 text-sm leading-5 text-neon-error tablet:text-base"
     >
       {{ error }}
     </p>

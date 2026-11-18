@@ -53,11 +53,12 @@ export function useOtpVerification() {
     }
 
     try {
-      await verifyOtp.mutateAsync({
+      const { otp_id } = await verifyOtp.mutateAsync({
         type: signInStore.method,
         otp_code: code.value,
         ref_code: signInStore.refCode,
       })
+      signInStore.setVerificationId(otp_id)
       return true
     } catch (err: unknown) {
       failedAttempts.value += 1

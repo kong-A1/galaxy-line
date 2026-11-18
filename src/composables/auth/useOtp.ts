@@ -9,6 +9,7 @@ import type {
   LinkMemberPayload,
   LoginOtpPayload,
   LoginOtpResponse,
+  OtpId,
   OtpRequestPayload,
   OtpVerifyPayload,
   RefCode,
@@ -47,10 +48,10 @@ export function useRequestOtp() {
 export function useVerifyOtp() {
   const queryClient = useQueryClient()
 
-  return useMutation<void, ApiError | OtpError, OtpVerifyPayload>({
+  return useMutation<OtpId, ApiError | OtpError, OtpVerifyPayload>({
     mutationFn: async (payload) => {
       try {
-        await otpService.verifyOtp(payload)
+        return await otpService.verifyOtp(payload)
       } catch (error: unknown) {
         const failure = toOtpFailure(error)
         throw attemptsOf(failure) >= OTP_MAX_ATTEMPTS ? new OtpError('locked') : failure

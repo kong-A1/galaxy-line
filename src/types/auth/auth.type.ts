@@ -8,7 +8,7 @@ export type SignInMethod = 'phone' | 'email'
 
 export type OtpErrorCode = 'invalid' | 'unavailable' | 'locked'
 
-export type Gender = 'unspecified' | 'male' | 'female'
+export type Gender = 'unknown' | 'male' | 'female'
 
 interface AuthPayload {
   ref_branch_code: string | null
@@ -88,4 +88,30 @@ export interface NationalityResponse {
   alpha_2_code: string
   text_th: string
   text_en: string
+}
+
+export interface RegisterPayload {
+  first_name: string
+  last_name: string
+  gender: string
+  nationality: string
+  citizen_id?: string
+  passport_id?: string
+  date_of_birth?: string
+  verification_id: string
+  verification_type: string
+  consent_news_status: boolean
+  consent_pdpa_status: boolean
+  consent_person_status: boolean
+
+  language: string
+  source_name: string
+  ref_branch_code: string
+  line_id_token: string
+  entry_url: string
+}
+
+export interface RegisterResponse {
+  member_code: string
+  coupons: number
 }

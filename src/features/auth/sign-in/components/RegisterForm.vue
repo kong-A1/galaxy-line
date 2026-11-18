@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, useId, useTemplateRef } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { computed, onMounted, ref, useId, useTemplateRef, watch } from 'vue'
 import {
   IconGenderBigender,
   IconId,
@@ -9,6 +8,7 @@ import {
   IconWorld,
 } from '@tabler/icons-vue'
 
+import { useGenderOptions } from '@/composables/useGenderOptions'
 import { useNationalityOptions } from '@/composables/auth/logic/useNationalityOptions'
 
 import { useRegisterForm } from '@/composables/auth/logic/useRegisterForm'
@@ -16,25 +16,24 @@ import { caretPosition } from '@/utils/caret'
 import { formatCitizenId, normalizeCitizenId } from '@/utils/citizenId'
 import { normalizePassport } from '@/utils/passport'
 
-import type { Gender } from '@/types/auth/auth.type'
-
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseDatePicker from '@/components/common/BaseDatePicker.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseAutocomplete from '@/components/common/BaseAutocomplete.vue'
 import BaseSelect from '@/components/common/BaseSelect.vue'
+import CollapseTransition from '@/components/ui/CollapseTransition.vue'
 
 const emit = defineEmits<{
   /** The details are valid and ready to send */
   registered: []
 }>()
 
-const { t } = useI18n()
 const {
   values,
   isSelectedThai,
   errors,
   isSubmitting,
+  submitError,
   firstInvalid,
   markTouched,
   submit: validate,
@@ -54,13 +53,19 @@ const form = useTemplateRef<HTMLFormElement>('form')
 
 const { options: nationalities } = useNationalityOptions()
 
-const genders = computed<{ value: Gender; label: string }[]>(() => [
-  { value: 'unspecified', label: t('auth.register.genderUnspecified') },
-  { value: 'male', label: t('auth.register.genderMale') },
-  { value: 'female', label: t('auth.register.genderFemale') },
-])
+const { options: genders } = useGenderOptions()
 
 const maxDate = computed(() => new Date())
+
+// Which ID field is shown. It only follows a chosen nationality: while the field slides shut after the nationality is
+// cleared it keeps its kind, instead of swapping to the other one mid-way
+const idKind = ref<'citizen' | 'passport'>(isSelectedThai.value ? 'citizen' : 'passport')
+watch(
+  () => values.nationality,
+  (nationality) => {
+    if (nationality) idKind.value = isSelectedThai.value ? 'citizen' : 'passport'
+  },
+)
 
 // Shown as "1-2345-67890-12-3" while typing. Rewriting the value sends the caret to the end, so it goes back after the same digit.
 function onCitizenIdInput(event: Event) {
@@ -153,50 +158,73 @@ onMounted(() => form.value?.querySelector<HTMLInputElement>(`#${ids.firstName}`)
       class="mb-3"
     />
 
-    <!-- Examples, not copy: the same in every language -->
-    <BaseInput
-      v-if="isSelectedThai"
-      :id="ids.citizenId"
-      :model-value="formatCitizenId(values.citizenId)"
-      :label="$t('auth.register.citizenId')"
-      :icon="IconId"
-      :error="errors.citizenId"
-      class="mb-3"
-      inputmode="numeric"
-      autocomplete="off"
-      maxlength="17"
-      placeholder="0-0000-00000-00-0"
-      @input="onCitizenIdInput"
-      @blur="markTouched('citizenId')"
-    />
+    <!-- The ID field slides open once a nationality is chosen, then swaps between the two kinds -->
+    <CollapseTransition>
+      <div v-if="values.nationality">
+        <Transition
+          mode="out-in"
+          enter-active-class="transition duration-200 ease-out motion-reduce:transition-none"
+          enter-from-class="opacity-0"
+          leave-active-class="transition duration-150 ease-in motion-reduce:transition-none"
+          leave-to-class="opacity-0"
+        >
+          <!-- Examples, not copy: the same in every language -->
+          <BaseInput
+            v-if="idKind === 'citizen'"
+            :id="ids.citizenId"
+            key="citizen"
+            :model-value="formatCitizenId(values.citizenId)"
+            :label="$t('auth.register.citizenId')"
+            :icon="IconId"
+            :error="errors.citizenId"
+            class="mb-3"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="17"
+            placeholder="0-0000-00000-00-0"
+            @input="onCitizenIdInput"
+            @blur="markTouched('citizenId')"
+          />
 
-    <BaseInput
-      v-if="!isSelectedThai && values.nationality"
-      :id="ids.passportId"
-      :model-value="values.passportId"
-      :label="$t('auth.register.passportId')"
-      :icon="IconIdBadge2"
-      :error="errors.passportId"
-      class="mb-3"
-      autocomplete="off"
-      autocapitalize="characters"
-      spellcheck="false"
-      maxlength="9"
-      placeholder="AA1234567"
-      @input="onPassportInput"
-      @blur="markTouched('passportId')"
-    />
+          <BaseInput
+            v-else
+            :id="ids.passportId"
+            key="passport"
+            :model-value="values.passportId"
+            :label="$t('auth.register.passportId')"
+            :icon="IconIdBadge2"
+            :error="errors.passportId"
+            class="mb-3"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            maxlength="9"
+            placeholder="AA1234567"
+            @input="onPassportInput"
+            @blur="markTouched('passportId')"
+          />
+        </Transition>
+      </div>
+    </CollapseTransition>
 
     <BaseDatePicker
       :id="ids.birthDate"
       v-model="values.birthDate"
-      :label="$t('auth.register.birthDate')"
+      :label="`${$t('auth.register.birthDate')}*`"
       :placeholder="$t('auth.register.birthDate')"
       class="mb-3"
       :max-date="maxDate"
       :error="errors.birthDate"
       @blur="markTouched('birthDate')"
     />
+
+    <p
+      v-if="submitError"
+      role="alert"
+      class="anim-fade mb-1 text-center text-sm leading-5 text-neon-error tablet:text-base"
+    >
+      {{ submitError }}
+    </p>
 
     <BaseButton
       type="submit"

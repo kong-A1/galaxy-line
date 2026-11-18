@@ -2,6 +2,7 @@
 import { IconBell, IconUser } from '@tabler/icons-vue'
 
 import BaseLogo from '@/components/common/BaseLogo.vue'
+import BrandWordmark from '@/components/ui/BrandWordmark.vue'
 import { useMember } from '@/composables/member/useMember'
 
 defineProps<{ scrolled: boolean }>()
@@ -18,11 +19,10 @@ const { data: member } = useMember()
     <div class="h-(--app-top) w-full px-6">
       <header class="flex h-full items-center justify-between gap-3">
         <div class="flex min-w-0 items-center gap-4">
-          <div class="flex shrink-0 rounded-[10px] bg-logo-tile p-0.5">
-            <BaseLogo variant="light" size="none" rounded="lg" class="size-9" />
-          </div>
-          <p class="truncate text-fl-xl font-bold tracking-wide uppercase">
-            {{ $t('app.name') }}
+          <BaseLogo size="none" rounded="lg" class="size-9" />
+
+          <p class="truncate text-fl-xl font-bold tracking-wide">
+            <BrandWordmark />
           </p>
         </div>
 

@@ -17,9 +17,12 @@ export function useLineSession() {
   const errorMessage = ref('')
   const isLoading = computed(() => loginWithLine.isPending.value)
 
-  /** Resolves true when the backend token is stored (new or from an earlier visit); false when it could not be got */
-  async function signIn(): Promise<boolean> {
-    if (authStore.hasToken()) return true
+  /**
+   * Resolves true when the backend token is stored (new or from an earlier visit); false when it could not be got.
+   * `force` asks for a new token even when one is stored, e.g. right after registering, when the old one knows no member.
+   */
+  async function signIn({ force = false }: { force?: boolean } = {}): Promise<boolean> {
+    if (!force && authStore.hasToken()) return true
 
     errorMessage.value = ''
 

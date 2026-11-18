@@ -305,9 +305,9 @@ const showClear = computed(() => props.clearable && picked.value.length > 0)
             class="flex min-h-12 cursor-pointer items-center justify-between gap-3 px-4 py-2 text-base tablet:min-h-14 tablet:text-lg"
             :class="
               isPicked(option.value)
-                ? 'bg-neon-accent/20 font-bold text-neon-ink'
+                ? 'bg-neon-accent/20 font-bold text-neon-ink dark:bg-neon-accent/55'
                 : index === activeIndex
-                  ? 'bg-neon-ghost-bg text-neon-ink'
+                  ? 'bg-neon-ghost-bg text-neon-ink dark:bg-white/12'
                   : 'text-neon-ink'
             "
             @click="choose(index)"

@@ -44,13 +44,21 @@ const privileges = [
         style="animation-delay: 0.07s"
       >
         <div class="flex items-center justify-between gap-3">
-          <p class="text-fl-sm text-neon-soft">{{ $t('app.home.availablePoints') }}</p>
-          <p class="neon-text-points shrink-0 text-fl-3xl font-bold">{{ points }}</p>
+          <p class="text-base font-medium text-neon-soft">{{ $t('app.home.availablePoints') }}</p>
+          <p
+            class="neon-text-points shrink-0 text-[40px] leading-[1.1] font-bold whitespace-nowrap"
+          >
+            {{ points }}
+          </p>
         </div>
 
         <div v-if="expiringPoints" class="flex items-center justify-between gap-3">
-          <p class="min-w-0 text-fl-sm text-neon-soft">{{ $t('app.home.expiringPoints') }}</p>
-          <p class="neon-text-points shrink-0 text-fl-xl font-bold">{{ expiringPoints }}</p>
+          <p class="min-w-0 text-base font-medium text-neon-soft">
+            {{ $t('app.home.expiringPoints') }}
+          </p>
+          <p class="neon-text-points shrink-0 text-2xl leading-[1.1] font-bold whitespace-nowrap">
+            {{ expiringPoints }}
+          </p>
         </div>
 
         <BaseButton
@@ -59,7 +67,7 @@ const privileges = [
           rounded="full"
           color="neon-violet"
           :icon="IconQrcode"
-          class="rounded-full! font-semibold"
+          class="min-h-[50px]! rounded-full! text-base font-semibold"
           @click="qrOpen = true"
         >
           {{ $t('app.home.scanForPoints') }}

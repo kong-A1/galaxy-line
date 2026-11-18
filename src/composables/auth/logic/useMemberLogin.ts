@@ -1,10 +1,8 @@
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
+import { useLineContext } from '@/composables/auth/logic/useLineContext'
 import { useLinkMember, useLoginOtp } from '@/composables/auth/useOtp'
-import { getLiffAccessToken } from '@/services/liff/liff'
 import { useAuthStore } from '@/stores/auth.store'
-import { usePdpaStore } from '@/stores/pdpa.store'
 import { useSignInStore } from '@/stores/sign-in.store'
 
 /** Where the person goes once a verified code has been traded for a member */
@@ -16,9 +14,8 @@ export type MemberLoginOutcome = 'member' | 'register' | 'not-member'
  * - linking fails: not a member
  */
 export function useMemberLogin() {
-  const { locale } = useI18n()
   const authStore = useAuthStore()
-  const pdpa = usePdpaStore()
+  const lineContext = useLineContext()
   const signInStore = useSignInStore()
   const loginOtp = useLoginOtp()
   const linkMember = useLinkMember()
@@ -38,8 +35,8 @@ export function useMemberLogin() {
     }
 
     try {
-      const lineToken = getLiffAccessToken()
-      if (!lineToken) return 'not-member'
+      const { line_id_token, ...context } = lineContext.read()
+      if (!line_id_token) return 'not-member'
 
       const isPhone = signInStore.method === 'phone'
       const destination = signInStore.destination.replace(/^\+66/, '0')
@@ -48,13 +45,8 @@ export function useMemberLogin() {
         action_type: 'line',
         email: isPhone ? null : destination,
         phone: isPhone ? destination : null,
-        line_id_token: lineToken,
-        consent_pdpa_status: pdpa.consent?.privacy ?? false,
-        consent_person_status: pdpa.consent?.terms ?? false,
-        consent_news_status: pdpa.consent?.marketing ?? false,
-        language: locale.value,
-        ref_branch_code: localStorage.getItem('ref-branch-code') ?? '',
-        entry_url: `https://liff.line.me/${import.meta.env.VITE_LIFF_ID}${localStorage.getItem('liff-state') ?? ''}`,
+        line_id_token,
+        ...context,
       })
       return 'member'
     } catch {

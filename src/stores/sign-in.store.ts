@@ -36,6 +36,8 @@ export const useSignInStore = defineStore('sign-in', () => {
   const refCode = ref('')
   /** The code was accepted; the register step only opens after this */
   const verified = ref(false)
+  /** Proof the code was accepted (`otp_id`); the register request carries it */
+  const verificationId = ref('')
 
   function setAction(next: SignInAction) {
     action.value = next
@@ -47,10 +49,15 @@ export const useSignInStore = defineStore('sign-in', () => {
     destination.value = value
     refCode.value = nextRefCode
     verified.value = false
+    verificationId.value = ''
   }
 
   function markVerified() {
     verified.value = true
+  }
+
+  function setVerificationId(id: string) {
+    verificationId.value = id
   }
 
   function setRefCode(nextRefCode: string) {
@@ -61,6 +68,7 @@ export const useSignInStore = defineStore('sign-in', () => {
     destination.value = ''
     refCode.value = ''
     verified.value = false
+    verificationId.value = ''
     // Called once the person has left the flow: the next visit starts from the welcome page's own choice
     setAction('sign-in')
   }
@@ -71,9 +79,11 @@ export const useSignInStore = defineStore('sign-in', () => {
     destination,
     refCode,
     verified,
+    verificationId,
     setAction,
     setOtpRequest,
     markVerified,
+    setVerificationId,
     setRefCode,
     clear,
   }
