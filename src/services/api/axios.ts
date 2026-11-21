@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import { getStoredToken } from '@/services/api/token'
+
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 5000,
@@ -11,7 +13,7 @@ export const apiClient = axios.create({
 })
 
 apiClient.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem('_bearer_token')
+  const accessToken = getStoredToken()
 
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`

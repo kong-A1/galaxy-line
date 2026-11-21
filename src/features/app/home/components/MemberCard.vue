@@ -2,6 +2,10 @@
 import BaseLogo from '@/components/common/BaseLogo.vue'
 
 defineProps<{ name: string; code: string; tier: string }>()
+
+// Badge colours by tier; a tier without its own look keeps the gold one
+const CHIPS: Record<string, string> = { diamond: 'neon-chip-diamond' }
+const chipClass = (tier: string) => CHIPS[tier.trim().toLowerCase()] ?? 'neon-chip-gold'
 </script>
 
 <template>
@@ -16,7 +20,7 @@ defineProps<{ name: string; code: string; tier: string }>()
 
     <div class="relative flex items-start justify-between gap-3">
       <div class="min-w-0">
-        <p class="text-fl-sm font-semibold tracking-[0.14em] text-white/90 uppercase">
+        <p class="text-xs font-semibold tracking-[0.14em] text-[#f3e8ff] uppercase">
           {{ $t('app.home.memberLabel') }}
         </p>
         <h3 class="mt-1 text-fl-2xl font-semibold break-words">{{ name }}</h3>
@@ -27,7 +31,7 @@ defineProps<{ name: string; code: string; tier: string }>()
 
     <div class="relative flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
       <div class="min-w-0">
-        <p class="text-fl-sm text-white/90">{{ $t('app.home.memberCode') }}</p>
+        <p class="text-xs text-[#f3e8ff]">{{ $t('app.home.memberCode') }}</p>
         <p class="mt-0.5 text-fl-lg font-semibold tracking-[0.08em] whitespace-nowrap">
           {{ code }}
         </p>
@@ -35,7 +39,8 @@ defineProps<{ name: string; code: string; tier: string }>()
 
       <span
         v-if="tier"
-        class="neon-chip-gold shrink-0 rounded-full px-3.5 py-1.5 text-sm font-bold tracking-[0.08em] uppercase"
+        :class="chipClass(tier)"
+        class="shrink-0 rounded-full px-3.5 py-1.5 text-sm font-bold tracking-[0.08em] uppercase"
       >
         {{ tier }}
       </span>

@@ -9,6 +9,8 @@ defineProps<{
 // Width of the whole row; the connectors between the circles take what the circles leave
 const WIDTH = 292
 const CIRCLE = 40
+// Space kept clear between a circle and the line that leaves or reaches it
+const GAP = 22
 </script>
 
 <template>
@@ -22,13 +24,15 @@ const CIRCLE = 40
       class="relative"
       :aria-current="idx + 1 === current ? 'step' : undefined"
     >
-      <!-- Connector to the next step, drawn between the circles (not behind them); it fills with colour once that step is reached -->
+      <!-- Connector to the next step: a short line with a gap on each side of it, so it floats between the circles instead of touching them;
+           it fills with colour once that step is reached -->
       <span
         v-if="idx < labels.length - 1"
         aria-hidden="true"
-        class="absolute top-5 left-full h-[3px] -translate-y-1/2 overflow-hidden rounded-[3px] bg-neon-ink/15"
+        class="absolute top-5 h-[3px] -translate-y-1/2 overflow-hidden rounded-[3px] bg-neon-ink/15"
         :style="{
-          width: `calc((${WIDTH}px - ${labels.length * CIRCLE}px) / ${labels.length - 1})`,
+          left: `calc(100% + ${GAP}px)`,
+          width: `calc((${WIDTH}px - ${labels.length * CIRCLE}px) / ${labels.length - 1} - ${GAP * 2}px)`,
         }"
       >
         <span

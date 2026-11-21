@@ -12,9 +12,9 @@ defineProps<{ title: string; detail: string; accent?: boolean }>()
     >
       <!-- A soft white orb with the star on it -->
       <span
-        class="flex size-10 items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#fff,rgb(255_255_255/0.35)_70%)] text-neon-accent shadow-[0_0_20px_rgb(255_255_255/0.8)]"
+        class="flex size-10 items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#fff,rgb(255_255_255/0.35)_70%)] text-[#5b21b6] shadow-[0_0_20px_rgb(255_255_255/0.8)]"
       >
-        <IconStar :size="22" :stroke-width="2.2" aria-hidden="true" />
+        <IconStar :size="20" :stroke-width="2.4" aria-hidden="true" />
       </span>
     </div>
 

@@ -105,6 +105,25 @@
   animation: fade 0.3s both;
 }
 
+/* Press ripple (see directives/ripple.ts) */
+@keyframes ripple {
+  from {
+    transform: scale(0);
+    opacity: 0.28;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+.ripple-wave {
+  position: absolute;
+  border-radius: 9999px;
+  background: currentColor;
+  pointer-events: none;
+  animation: ripple 0.5s ease-out forwards;
+}
+
 /* PDPA popup */
 @keyframes pop {
   from {

@@ -11,7 +11,7 @@ import { useCountdown } from '@/composables/useCountdown'
 import { useHomeSummary } from '@/composables/member/logic/useHomeSummary'
 import { drawBarcode, qrDataUrl } from '@/utils/memberCode'
 
-import NextTierCard from './NextTierCard.vue'
+import TierStatusCard from './TierStatusCard.vue'
 
 const emit = defineEmits<{ close: [] }>()
 
@@ -148,14 +148,14 @@ async function openHistory(close: () => Promise<void>) {
         </p>
       </div>
 
-      <NextTierCard
-        v-if="tier?.next"
-        :current="tier.current"
-        :next="tier.next"
-        :remaining="tier.remaining"
-        :spent="tier.spent"
-        :target="tier.target"
-        :percent="tier.percent"
+      <TierStatusCard
+        v-if="tier"
+        :current-tier="tier.current"
+        :next-tier="tier.next ? { name: tier.next, threshold: tier.threshold } : null"
+        :spend="tier.spend"
+        :tier-expiry-date="tier.expiryDate"
+        :spend-this-period="tier.spendThisPeriod"
+        :maintain-threshold="tier.maintainThreshold"
       />
 
       <div class="flex flex-col gap-3">

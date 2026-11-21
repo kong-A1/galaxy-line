@@ -1,6 +1,8 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
+import { hasStoredToken, TOKEN_KEY } from '@/services/api/token'
+
 export type AuthStatus = 'unknown' | 'checking' | 'authenticated' | 'unauthenticated'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -15,7 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function setAuthenticated(accessToken: string) {
-    localStorage.setItem('_bearer_token', accessToken)
+    localStorage.setItem(TOKEN_KEY, accessToken)
 
     status.value = 'authenticated'
     errorMessage.value = ''
@@ -23,11 +25,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   /** True when a backend token from an earlier visit is still stored */
   function hasToken() {
-    return Boolean(localStorage.getItem('_bearer_token'))
+    return hasStoredToken()
   }
 
   function setUnauthenticated(message = '') {
-    localStorage.removeItem('_bearer_token')
+    localStorage.removeItem(TOKEN_KEY)
 
     status.value = 'unauthenticated'
     errorMessage.value = message

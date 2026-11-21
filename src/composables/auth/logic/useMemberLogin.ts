@@ -36,7 +36,10 @@ export function useMemberLogin() {
 
     try {
       const { line_id_token, ...context } = lineContext.read()
-      if (!line_id_token) return 'not-member'
+      if (!line_id_token) {
+        authStore.setUnauthenticated()
+        return 'not-member'
+      }
 
       const isPhone = signInStore.method === 'phone'
       const destination = signInStore.destination.replace(/^\+66/, '0')
@@ -50,6 +53,8 @@ export function useMemberLogin() {
       })
       return 'member'
     } catch {
+      // Not linked to a member, so the token must not be left behind: it would keep the sign-in pages out of reach
+      authStore.setUnauthenticated()
       return 'not-member'
     }
   }

@@ -25,8 +25,13 @@ const router = useRouter()
 const loadingStore = useLoadingStore()
 const { signIn } = useLineSession()
 
-// LINE has already signed the person in by the time this page opens, so trade its token for ours right away
-onMounted(() => void signIn())
+// LINE has already signed the person in by the time this page opens, so trade its token for ours right away.
+// Getting one means this LINE account is already a member: straight to the app. Otherwise they stay to sign in or register.
+// The loading cover stays up until that is known, so a member never sees this page flash by.
+onMounted(async () => {
+  if (await signIn()) await router.replace('/app')
+  else loadingStore.hideLoading()
+})
 
 const benefits = computed(() => [
   {

@@ -297,6 +297,13 @@ html.neon-page body {
   box-shadow: 0 0 18px rgb(245 190 40 / 0.6);
 }
 
+/* The diamond tier badge: blue to violet, with a blue glow */
+@utility neon-chip-diamond {
+  background-image: linear-gradient(135deg, #e0fbff, #5ee7ff, #b794ff);
+  color: #1a1033;
+  box-shadow: 0 0 18px rgb(94 231 255 / 0.6);
+}
+
 /* Gradient text of the points figure (colours follow the mode through the tokens) */
 @utility neon-text-points {
   background-image: linear-gradient(90deg, var(--neon-points-from), var(--neon-points-to));
